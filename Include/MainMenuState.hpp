@@ -28,6 +28,7 @@ class MainMenuState: public GenericGameEngine::State
         sf::Text mGameTitle;
         sf::Text mPlayButton;
         sf::Text mExitButton;
+        sf::Text mGameRulesButton;
         sf::Sprite mBackground;
 
         bool mIsPlayButtonSelected;
@@ -35,6 +36,9 @@ class MainMenuState: public GenericGameEngine::State
         
         bool mIsExitButtonSelected;
         bool mIsExitButtonPressed;
+
+        bool mIsGameRulesButtonSelected;
+        bool mIsGameRulesButtonPressed;
 
         sf::Texture mLogoPieceTexture;
         float mSnakeTextureSize;

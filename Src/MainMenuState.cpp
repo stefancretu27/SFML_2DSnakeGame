@@ -1,12 +1,15 @@
 #include "MainMenuState.hpp"
 #include "GamePlayState.hpp"
+#include "GameRulesState.hpp"
 
 #include <SFML/Window/Event.hpp>
 
 MainMenuState::MainMenuState(): mIsPlayButtonSelected{true},
                                 mIsPlayButtonPressed{false},
                                 mIsExitButtonSelected{false},
-                                mIsExitButtonPressed{false}
+                                mIsExitButtonPressed{false},
+                                mIsGameRulesButtonSelected{false},
+                                mIsGameRulesButtonPressed{false}
 {}
 
 void MainMenuState::initState()
@@ -18,7 +21,7 @@ void MainMenuState::initState()
     * This is necessary as the Sprite does not store the texture itself, but keeps a pointer to the passed argument.
     */
     GameContext::getAssetsManager().addTexture(GameContext::MainMenuBackground, 
-                                                "C:\\Users\\scretu\\VisualCodeProjects\\Snake_game\\Assets\\Textures\\grassBackground_225p.jpg", true);
+                                                GameContext::getAssetsPath() + "Textures\\grassBackground_225p.jpg", true);
     
     // set the texture source of the Sprite object using as argument the corresponding texture loaded in GameContext's assets
     mBackground.setTexture(GameContext::getAssetsManager().getTexture(GameContext::MainMenuBackground));
@@ -43,7 +46,7 @@ void MainMenuState::initState()
     * Fonts source: https://fonts.google.com/
     * */
     GameContext::getAssetsManager().addFont(GameContext::MainFont, 
-                                            "C:\\Users\\scretu\\VisualCodeProjects\\Snake_game\\Assets\\Fonts\\League_Gothic\\LeagueGothic-Regular-VariableFont_wdth.ttf");
+                                            GameContext::getAssetsPath() + "Fonts\\League_Gothic\\LeagueGothic-Regular-VariableFont_wdth.ttf");
     
 
     // Game title
@@ -77,7 +80,6 @@ void MainMenuState::initState()
     mPlayButton.setCharacterSize(50);
     mPlayButton.setFillColor(sf::Color::White);
 
-
     //Exit button
     mExitButton.setFont(GameContext::getAssetsManager().getFont(GameContext::MainFont));
     mExitButton.setString("Exit game");
@@ -88,10 +90,20 @@ void MainMenuState::initState()
     mExitButton.setCharacterSize(50);
     mExitButton.setFillColor(sf::Color::White);
 
+    //Game rules
+    mGameRulesButton.setFont(GameContext::getAssetsManager().getFont(GameContext::MainFont));
+    mGameRulesButton.setString("Game rules");
+    mGameRulesButton.setOrigin(  mGameRulesButton.getLocalBounds().width/2, 
+                            mGameRulesButton.getLocalBounds().height/2);
+    mGameRulesButton.setPosition( GameContext::getWindowRenderer().getSize().x/2 - 10.f, 
+                             GameContext::getWindowRenderer().getSize().y/2 + 90.f);
+    mGameRulesButton.setCharacterSize(50);
+    mGameRulesButton.setFillColor(sf::Color::White);
+
 
     // c++ logo built out of c++logo icons
     GameContext::getAssetsManager().addTexture(GameContext::LogoIcon, 
-                                                "C:\\Users\\scretu\\VisualCodeProjects\\Snake_game\\Assets\\Textures\\c++SnakeBodyPart_24p.png");
+                                                GameContext::getAssetsPath() + "Textures\\c++SnakeBodyPart_24p.png");
 
     //Set powsition for mini logos that compose the C++ logo
     mLogoPieceTexture = GameContext::getAssetsManager().getTexture(GameContext::LogoIcon);
@@ -223,20 +235,34 @@ void MainMenuState::processInput()
             {
                 case sf::Keyboard::Up:
                 {
-                    if(!mIsPlayButtonSelected)
+                    if(!mIsExitButtonSelected && mIsGameRulesButtonSelected)
+                    {
+                        mIsPlayButtonSelected = false;
+                        mIsExitButtonSelected = true;
+                        mIsGameRulesButtonSelected = false;
+                    }
+                    else if(!mIsPlayButtonSelected && mIsExitButtonSelected)
                     {
                         mIsPlayButtonSelected = true;
                         mIsExitButtonSelected = false;
+                        mIsGameRulesButtonSelected = false;
                     }
                 }
                 break;
 
                 case sf::Keyboard::Down:
                 {
-                    if(!mIsExitButtonSelected)
+                    if(!mIsExitButtonSelected && !mIsGameRulesButtonSelected)
                     {
                         mIsPlayButtonSelected = false;
                         mIsExitButtonSelected = true;
+                        mIsGameRulesButtonSelected = false;
+                    }
+                    else if(mIsExitButtonSelected && !mIsGameRulesButtonSelected )
+                    {
+                        mIsPlayButtonSelected = false;
+                        mIsExitButtonSelected = false;
+                        mIsGameRulesButtonSelected = true;
                     }
                 }
                 break;
@@ -245,14 +271,19 @@ void MainMenuState::processInput()
                 {
                     mIsPlayButtonPressed = false;
                     mIsExitButtonPressed = false;
+                    mIsGameRulesButtonPressed = false;
 
-                    if(mIsPlayButtonSelected)
+                    if(mIsPlayButtonSelected && !mIsExitButtonSelected && !mIsGameRulesButtonSelected)
                     {
                         mIsPlayButtonPressed = true;
                     }
-                    else
+                    else if(mIsExitButtonSelected && !mIsPlayButtonSelected && !mIsGameRulesButtonSelected)
                     {
                         mIsExitButtonPressed = true;
+                    }
+                    else if(!mIsExitButtonSelected && !mIsPlayButtonSelected && mIsGameRulesButtonSelected)
+                    {
+                        mIsGameRulesButtonPressed = true;
                     }
                 }
                 break;
@@ -270,36 +301,51 @@ void MainMenuState::processInput()
 
             if (event.type == sf::Event::MouseButtonPressed)
             {
-                //left mouse button clicked on Play button and play button wa snot selected before
+                //left mouse button clicked on Play button and play button was not selected before
                 if(mPlayButton.getGlobalBounds().contains(translated_pos) &&
                     !mIsPlayButtonSelected)
                 {
                     mIsPlayButtonSelected = true;
                     mIsExitButtonSelected = false;
+                    mIsGameRulesButtonSelected = false;
                 }
-                //left mouse button clicked on Exit button and play button wa snot selected before
+                //left mouse button clicked on Exit button and play button was not selected before
                 else if(mExitButton.getGlobalBounds().contains(translated_pos) &&
                         !mIsExitButtonSelected)
                 {
                     mIsPlayButtonSelected = false;
                     mIsExitButtonSelected = true;
+                    mIsGameRulesButtonSelected = false;
+                }
+                else if(mGameRulesButton.getGlobalBounds().contains(translated_pos) &&
+                        !mIsGameRulesButtonSelected)
+                {
+                    mIsPlayButtonSelected = false;
+                    mIsGameRulesButtonSelected = false;
+                    mIsGameRulesButtonSelected = true;
                 }
             }
             else if (event.type == sf::Event::MouseButtonReleased)
             {
                 if(mPlayButton.getGlobalBounds().contains(translated_pos) ||
-                    mExitButton.getGlobalBounds().contains(translated_pos))
+                    mExitButton.getGlobalBounds().contains(translated_pos) ||
+                    mGameRulesButton.getGlobalBounds().contains(translated_pos))
                 {
                     mIsPlayButtonPressed = false;
                     mIsExitButtonPressed = false;
+                    mIsGameRulesButtonPressed = false;
 
-                    if(mIsPlayButtonSelected)
+                    if(mIsPlayButtonSelected && !mIsExitButtonSelected && !mIsGameRulesButtonSelected)
                     {
                         mIsPlayButtonPressed = true;
                     }
-                    else
+                    else if(mIsExitButtonSelected && !mIsPlayButtonSelected && !mIsGameRulesButtonSelected)
                     {
                         mIsExitButtonPressed = true;
+                    }
+                    else if(!mIsExitButtonSelected && !mIsPlayButtonSelected && mIsGameRulesButtonSelected)
+                    {
+                        mIsGameRulesButtonPressed = true;
                     }
                 }
             }
@@ -313,20 +359,34 @@ void MainMenuState::updateState(sf::Time elapsedTimeSinceLastUpdate)
     {
         mPlayButton.setFillColor(sf::Color::Yellow);
         mExitButton.setFillColor(sf::Color::White);
+        mGameRulesButton.setFillColor(sf::Color::White);
     }
     else if(mIsExitButtonSelected)
     {
         mPlayButton.setFillColor(sf::Color::White);
         mExitButton.setFillColor(sf::Color::Yellow);
+        mGameRulesButton.setFillColor(sf::Color::White);
+    }
+    else if(mIsGameRulesButtonSelected)
+    {
+        mPlayButton.setFillColor(sf::Color::White);
+        mExitButton.setFillColor(sf::Color::White);
+        mGameRulesButton.setFillColor(sf::Color::Yellow);
     }
 
     if(mIsPlayButtonPressed)
     {
+        mIsPlayButtonPressed = false;
         GameContext::getStatesManager().addState(std::make_unique<GamePlayState>(), true);
     }
     else if(mIsExitButtonPressed)
     {
         GameContext::getWindowRenderer().close();
+    }
+    else if(mIsGameRulesButtonPressed)
+    {
+        mIsGameRulesButtonPressed = false;
+        GameContext::getStatesManager().addState(std::make_unique<GameRulesState>(), true);
     }
 };
 
@@ -337,9 +397,12 @@ void MainMenuState::drawState()
     GameContext::getWindowRenderer().draw(mGameTitle);
     GameContext::getWindowRenderer().draw(mPlayButton);
     GameContext::getWindowRenderer().draw(mExitButton);
+    GameContext::getWindowRenderer().draw(mGameRulesButton);
+
     for(auto& logoPiece : mLogo)
     {
         GameContext::getWindowRenderer().draw(logoPiece);
     }
+
     GameContext::getWindowRenderer().display();
 };

@@ -51,7 +51,7 @@ void GameWonState::initState()
     mExitButton.setCharacterSize(50);
     mExitButton.setFillColor(sf::Color::White);
 
-    if(mBackgroundMusic.openFromFile("C:\\Users\\scretu\\VisualCodeProjects\\Snake_game\\Assets\\Sounds\\robbie williams - candy.wav"))
+    if(mBackgroundMusic.openFromFile(GameContext::getAssetsPath() + "Sounds\\robbie williams - candy.wav"))
     {
         mBackgroundMusic.setVolume(mDefaultMusicVolume);
         mBackgroundMusic.play();

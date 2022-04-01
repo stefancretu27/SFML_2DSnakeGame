@@ -29,15 +29,16 @@ void GamePlayState::initState()
     * This is necessary as the Sprite does not store the texture itself, but keeps a pointer to the passed argument.
     */
     GameContext::getAssetsManager().addTexture(GameContext::Grass, 
-                                                "C:\\Users\\scretu\\VisualCodeProjects\\Snake_game\\Assets\\Textures\\gameGrassBackground_219x230.jpg", true);
+                                                GameContext::getAssetsPath() + "Textures\\gameGrassBackground_219x230.jpg", true);
     GameContext::getAssetsManager().addTexture(GameContext::Food, 
-                                                "C:\\Users\\scretu\\VisualCodeProjects\\Snake_game\\Assets\\Textures\\Apple_24p.png");
+                                                GameContext::getAssetsPath() + "Textures\\Apple_24p.png");
     GameContext::getAssetsManager().addTexture(GameContext::Wall, 
-                                                "C:\\Users\\scretu\\VisualCodeProjects\\Snake_game\\Assets\\Textures\\brickWall_32p.jpg", true);
+                                                GameContext::getAssetsPath() + "Textures\\brickWall_32p.jpg", true);
     GameContext::getAssetsManager().addTexture(GameContext::SnakeBody, 
-                                                "C:\\Users\\scretu\\VisualCodeProjects\\Snake_game\\Assets\\Textures\\c++SnakeBodyPart_24p.png");
+                                                GameContext::getAssetsPath() + "Textures\\c++SnakeBodyPart_24p.png");
     GameContext::getAssetsManager().addTexture(GameContext::Candy, 
-                                                "C:\\Users\\scretu\\VisualCodeProjects\\Snake_game\\Assets\\Textures\\purpleCandy_52x24p.png");
+                                                GameContext::getAssetsPath() + "Textures\\purpleCandy_52x24p.png");
+
     /* 
     * Load sound buffer to the assets collection in the current context, as they must exists in the program, as long as Sound objects use them.
     * This is necessary as the Sound does not store the texture sound stream, but keeps a pointer to the passed argument. Sounds and music
@@ -49,11 +50,11 @@ void GamePlayState::initState()
     * https://www.sfml-dev.org/tutorials/2.5/audio-sounds.php
     */
     GameContext::getAssetsManager().addSoundBuffer(GameContext::AppleBiteSound, 
-                                                    "C:\\Users\\scretu\\VisualCodeProjects\\Snake_game\\Assets\\Sounds\\appleBiteSoundEffect.wav");
+                                                    GameContext::getAssetsPath() + "Sounds\\appleBiteSoundEffect.wav");
     GameContext::getAssetsManager().addSoundBuffer(GameContext::SnakeStrikeSound, 
-                                                    "C:\\Users\\scretu\\VisualCodeProjects\\Snake_game\\Assets\\Sounds\\snakeStrikeSound.ogg");
+                                                    GameContext::getAssetsPath() + "Sounds\\snakeStrikeSound.ogg");
     GameContext::getAssetsManager().addSoundBuffer(GameContext::SnakeRattlingSound, 
-                                                    "C:\\Users\\scretu\\VisualCodeProjects\\Snake_game\\Assets\\Sounds\\snakeRattlingSound.ogg");
+                                                    GameContext::getAssetsPath() + "Sounds\\snakeRattlingSound.ogg");
 
     // Grass
     mGrass.setTexture(GameContext::getAssetsManager().getTexture(GameContext::Grass));
@@ -130,7 +131,7 @@ void GamePlayState::initState()
     mSnakeRattling.setVolume(mDefaultMusicVolume);
 
     //start background music
-    if(mBackgroundMusic.openFromFile("C:\\Users\\scretu\\VisualCodeProjects\\Snake_game\\Assets\\Sounds\\gameBackgroundMusic.ogg"))
+    if(mBackgroundMusic.openFromFile(GameContext::getAssetsPath() + "Sounds\\gameBackgroundMusic.ogg"))
     {
         mBackgroundMusic.setVolume(mDefaultMusicVolume);
         mBackgroundMusic.play();

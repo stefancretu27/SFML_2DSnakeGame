@@ -5,7 +5,10 @@
 
 #include "SFML/Graphics/RenderWindow.hpp"
 
+#include <windows.h>
+
 #include <memory>
+#include <string>
 
 /*
 * Struct defining the Game's context. It provides the manager of all assets of the game,
@@ -28,6 +31,7 @@ struct GameContext
     static GenericGameEngine::AssetManager& getAssetsManager();
     static GenericGameEngine::StateManager& getStatesManager();
     static sf::RenderWindow& getWindowRenderer();
+    static std::string getAssetsPath();
 
     enum AssetID
     {
